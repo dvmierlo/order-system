@@ -17,11 +17,20 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
         <spring:import resource="classpath:order-system.xml"/>
     </spring:beans>
     
-    <munit:test name="processOrders_returnsElementMap" description="Calling processOrders returns two element map">
+    <munit:test name="processOrders_returns2ElementMap" description="Calling processOrders returns two element map">
         <munit:set payload="#[[{'orderID':444, 'location':'international','price':14.01}, {'orderID':444, 'location':'international','price':14.01}, {'orderID':555, 'location':'domestic','price':14.01}]]" doc:name="Set Message"/>
         <flow-ref name="processOrders" doc:name="Flow-ref to processOrders"/>
         <munit:assert-true message="The payload is not of the expected type java.util.Map." condition="#[message.payload is java.util.Map]" doc:name="Assert True"/>
         <munit:assert-on-equals message="The total items in the payload (type java.util.Map) is not equal to 2." expectedValue="#[2]" actualValue="#[message.payload.size()]" doc:name="Assert Equals"/>
+    </munit:test>
+
+    <munit:test name="processOrders_internationalKeyReturnsInternationalOrders" description="The value of the map key international contains only international orders">
+        <munit:set payload="#[[{'orderID':444, 'location':'international','price':14.01}, {'orderID':444, 'location':'international','price':14.01}]]" doc:name="Set Message"/>
+        <flow-ref name="processOrders" doc:name="Flow-ref to processOrders"/>
+        <munit:assert-true message="The payload does not contain two 'international' items." condition="#[message.payload.'international'.size() &gt; 0]" doc:name="Assert True"/>
+        <foreach collection="#[payload.'international']" doc:name="For Each">
+            <munit:assert-on-equals expectedValue="#['international']" actualValue="#[message.payload.'location']" doc:name="Assert Equals" message="#['The order at position ' + flowVars.counter + ' is not an international order.']"/>
+        </foreach>
     </munit:test>
     
 </mule>
