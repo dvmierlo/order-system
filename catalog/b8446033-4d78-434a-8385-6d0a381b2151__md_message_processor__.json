@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "orderSoapService",
+            "typeId": "provisionOrderResponse"
+        }
+    },
+    "outputMessageMetadata": {},
+    "id": "b8446033-4d78-434a-8385-6d0a381b2151",
+    "version": "5.2.0.0"
+}
