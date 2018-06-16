@@ -16,7 +16,14 @@ http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/m
         <expression-component doc:name="Expression">
         	<![CDATA[for (order: flowVars.'orders')
 {
-    payload.'international'.add(order);
+	if (order.location == 'international')
+	{
+	    payload.'international'.add(order);
+	}
+	else
+	{
+	    payload.'domestic'.add(order);
+	}
 }]]>
         </expression-component>
 	</flow>

@@ -25,11 +25,22 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
     </munit:test>
 
     <munit:test name="processOrders_internationalKeyReturnsInternationalOrders" description="The value of the map key international contains only international orders">
-        <munit:set payload="#[[{'orderID':444, 'location':'international','price':14.01}, {'orderID':444, 'location':'international','price':14.01}]]" doc:name="Set Message"/>
+        <munit:set payload="#[[{'orderID':444, 'location':'international','price':14.01}, {'orderID':444, 'location':'international','price':14.01}, {'orderID':555,
+'location':'domestic','price':14.01}]]" doc:name="Set Message"/>
         <flow-ref name="processOrders" doc:name="Flow-ref to processOrders"/>
         <munit:assert-true message="The payload does not contain two 'international' items." condition="#[message.payload.'international'.size() &gt; 0]" doc:name="Assert True"/>
         <foreach collection="#[payload.'international']" doc:name="For Each">
             <munit:assert-on-equals expectedValue="#['international']" actualValue="#[message.payload.'location']" doc:name="Assert Equals" message="#['The order at position ' + flowVars.counter + ' is not an international order.']"/>
+        </foreach>
+    </munit:test>
+    
+    <munit:test name="processOrders_domesticKeyReturnsDomesticOrders" description="The value of the map key domestic contains only domestic orders">
+        <munit:set payload="#[[{'orderID':444, 'location':'international','price':14.01}, {'orderID':444, 'location':'international','price':14.01}, {'orderID':555,
+'location':'domestic','price':14.01}]]" doc:name="Set Message"/>
+        <flow-ref name="processOrders" doc:name="Flow-ref to processOrders"/>
+        <munit:assert-true message="The payload does not contain two 'domestic' items." condition="#[message.payload.'domestic'.size() &gt; 0]" doc:name="Assert True"/>
+        <foreach collection="#[payload.'domestic']" doc:name="For Each">
+            <munit:assert-on-equals expectedValue="#['domestic']" actualValue="#[message.payload.'location']" doc:name="Assert Equals" message="#['The order at position ' + flowVars.counter + ' is not an domestic order.']"/>
         </foreach>
     </munit:test>
     
